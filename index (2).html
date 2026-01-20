@@ -1,0 +1,385 @@
+!DOCTYPE html
+html lang=vi
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0
+    titleKhám phá quyền của doanh nghiệp - Gen Z Editiontitle
+    script src=httpscdn.tailwindcss.comscript
+    style
+        @import url('httpsfonts.googleapis.comcss2family=Plus+Jakarta+Sanswght@400;600;700;800&display=swap');
+        
+        body { 
+            font-family 'Plus Jakarta Sans', sans-serif;
+            background #0f172a;
+            color #f8fafc;
+        }
+
+        .glass-card {
+            background rgba(30, 41, 59, 0.7);
+            backdrop-filter blur(12px);
+            border 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .certificate-card {
+            background linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border 2px solid #6366f1;
+            box-shadow 0 0 40px rgba(99, 102, 241, 0.2);
+        }
+
+        .gradient-text {
+            background linear-gradient(90deg, #818cf8, #c084fc, #fb7185);
+            -webkit-background-clip text;
+            -webkit-text-fill-color transparent;
+        }
+
+        .btn-primary {
+            background linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            transition all 0.3s ease;
+        }
+
+        .btn-primaryhover {
+            transform translateY(-2px);
+            box-shadow 0 10px 20px -10px rgba(168, 85, 247, 0.5);
+        }
+
+        .shake { animation shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform translate3d(-1px, 0, 0); }
+            20%, 80% { transform translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform translate3d(-4px, 0, 0); }
+            40%, 60% { transform translate3d(4px, 0, 0); }
+        }
+    style
+head
+body class=min-h-screen flex items-center justify-center p-4
+
+    div id=game-container class=max-w-2xl w-full glass-card rounded-[2.5rem] overflow-hidden relative
+        div class=absolute -top-10 -left-10 w-32 h-32 bg-indigo-50020 rounded-full blur-3xldiv
+        div class=absolute -bottom-10 -right-10 w-32 h-32 bg-rose-50020 rounded-full blur-3xldiv
+
+        !-- Header Area --
+        div class=relative p-6 pb-0 flex justify-between items-center
+            div
+                h2 class=text-xs font-black tracking-[0.2em] text-indigo-400 uppercaseThử thách v1.8h2
+                h1 class=text-xl font-extrabold gradient-text uppercaseKHÁM PHÁ QUYỀN CỦA DOANH NGHIỆPh1
+            div
+            div id=timer-wrapper class=hidden
+                div id=timer-box class=bg-slate-80080 px-4 py-2 rounded-2xl border border-slate-700 flex items-center gap-2
+                    span id=timer-display class=font-mono font-bold text-rose-4000500span
+                div
+            div
+        div
+
+        !-- Start Screen --
+        div id=screen-start class=p-8 space-y-8 relative max-w-md mx-auto
+            div class=text-center space-y-2
+                div class=inline-block p-4 bg-indigo-50010 rounded-3xl mb-4
+                    svg xmlns=httpwww.w3.org2000svg class=h-12 w-12 text-indigo-400 fill=none viewBox=0 0 24 24 stroke=currentColor
+                        path stroke-linecap=round stroke-linejoin=round stroke-width=2 d=M13 10V3L4 14h7v7l9-11h-7z 
+                    svg
+                div
+                h3 class=text-2xl font-boldThông tin nhập cuộch3
+                p class=text-slate-400 text-smVui lòng nhập đúng tên để giáo viên ghi nhận.p
+                div class=inline-flex items-center gap-2 px-3 py-1 bg-rose-50010 text-rose-400 rounded-full text-[10px] font-bold uppercase tracking-wider
+                    ⏱️ Thời gian 05 Phút
+                div
+            div
+
+            div class=space-y-4
+                input type=text id=player-name class=w-full bg-slate-80050 border border-slate-700 rounded-2xl px-5 py-4 outline-none focusborder-indigo-500 transition-all text-white placeholdertext-slate-500 placeholder=Họ và tên học sinh...
+                input type=text id=player-class class=w-full bg-slate-80050 border border-slate-700 rounded-2xl px-5 py-4 outline-none focusborder-indigo-500 transition-all text-white placeholdertext-slate-500 placeholder=Lớp (Ví dụ 12A1)...
+            div
+
+            button onclick=checkAndStart() class=w-full btn-primary py-5 rounded-2xl font-bold text-lg uppercase tracking-widest
+                Bắt đầu ngay
+            button
+        div
+
+        !-- Game Interface --
+        div id=screen-game class=p-8 hidden space-y-6
+            div class=space-y-3
+                div class=flex justify-between items-end text-[10px] font-black text-indigo-400 uppercase tracking-widest
+                    span id=progress-textThử thách 01span
+                    span id=score-text0 XPspan
+                div
+                div class=w-full bg-slate-800 h-2 rounded-full overflow-hidden
+                    div id=progress-bar class=h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700 style=width 20%div
+                div
+            div
+
+            div class=space-y-4
+                h3 id=question-title class=text-2xl font-extrabold leading-tight text-indigo-300h3
+                div class=p-6 bg-slate-80050 rounded-2xl border border-slate-70050 text-slate-100 shadow-inner
+                    p id=question-desc class=text-lg leading-relaxedp
+                div
+            div
+
+            div id=options class=grid grid-cols-1 mdgrid-cols-2 gap-4div
+        div
+
+        !-- Result Screen --
+        div id=screen-result class=p-8 hidden space-y-6 max-w-md mx-auto
+            div id=capture-area class=certificate-card rounded-[2rem] p-6 text-center space-y-4 relative overflow-hidden
+                div class=absolute top-0 right-0 p-4 opacity-10
+                    svg width=100 height=100 viewBox=0 0 24 24 fill=whitepath d=M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2zsvg
+                div
+                
+                h2 class=text-xl font-black gradient-text uppercase tracking-tighterBÁO CÁO HOÀN THÀNHh2
+                
+                div class=space-y-1
+                    p id=res-player-name class=text-2xl font-bold text-white uppercasep
+                    p id=res-player-class class=text-indigo-400 font-boldp
+                div
+
+                div class=py-4 border-y border-white10
+                    div id=final-score class=text-7xl font-black text-white0div
+                    div class=text-xs font-bold text-slate-400 uppercase tracking-widestTổng điểm đạt đượcdiv
+                div
+
+                div id=rank-badge class=py-2 px-4 bg-indigo-500 text-white rounded-full inline-block font-bold text-sm
+                    DANH HIỆU ĐANG TÍNH...
+                div
+
+                div class=text-[10px] text-slate-500 flex justify-between pt-2 italic
+                    span id=res-timestampspan
+                    span id=res-time-playedspan
+                div
+            div
+
+            div class=space-y-3
+                p class=text-xs text-indigo-300 font-medium text-center📸 Chụp màn hình khung trên để gửi cho Giáo viên.p
+                div class=grid grid-cols-2 gap-3
+                    button onclick=location.reload() class=py-4 rounded-2xl bg-slate-800 border border-slate-700 font-bold text-sm hoverbg-slate-700 transition-all
+                        Chơi lại
+                    button
+                    button onclick=window.print() class=py-4 rounded-2xl bg-indigo-600 font-bold text-sm hoverbg-indigo-500 transition-all
+                        In kết quả
+                    button
+                div
+            div
+        div
+
+        !-- Feedback UI --
+        div id=feedback-box class=fixed inset-0 bg-slate-95095 flex items-center justify-center p-6 hidden z-50 backdrop-blur-2xl
+            div id=feedback-content class=max-w-md w-full glass-card p-8 rounded-[2.5rem] text-center space-y-6 border-2
+                div id=feedback-status-icon class=text-7xl animate-bouncediv
+                h3 id=feedback-title class=text-3xl font-black uppercaseh3
+                
+                div class=space-y-4 text-left bg-slate-90050 p-6 rounded-2xl border border-white5
+                    div
+                        span class=text-[10px] font-black text-indigo-400 uppercase tracking-widest block mb-1Giải thích pháp luậtspan
+                        p id=feedback-text class=text-slate-300 text-sm leading-relaxedp
+                    div
+                    div class=pt-4 border-t border-white5
+                        span class=text-[10px] font-black text-emerald-400 uppercase tracking-widest block mb-1Bài học CEO rút raspan
+                        p id=lesson-text class=text-emerald-300 font-bold text-sm italicp
+                    div
+                div
+
+                button onclick=closeFeedback() class=w-full btn-primary py-5 rounded-2xl font-bold uppercase tracking-widest text-lg shadow-lgTiếp tục hành trìnhbutton
+            div
+        div
+    div
+
+    script
+        const INITIAL_TIME = 300; 
+
+        const gameData = [
+            { 
+                title Ngành nghề kinh doanh, 
+                desc Bạn có ý tưởng kinh doanh một dịch vụ 'Cho thuê người yêu đi dạo' - một dịch vụ mới lạ chưa có trong danh mục mã ngành nghề hiện nay. Bạn sẽ làm gì, 
+                options [
+                    { text Tự do kinh doanh vì pháp luật không cấm, correct true },
+                    { text Phải đợi nhà nước cập nhật mã ngành mới, correct false },
+                    { text Kinh doanh chui để không bị đóng thuế, correct false },
+                    { text Bỏ ý tưởng vì sợ vi phạm pháp luật, correct false }
+                ],
+                res Khoản 1 Điều 7 Luật Doanh nghiệp quy định doanh nghiệp có quyền tự do kinh doanh ngành, nghề mà luật không cấm.,
+                lesson Đừng đợi cơ hội có sẵn, hãy sáng tạo! Pháp luật bảo vệ sự đổi mới sáng tạo của bạn miễn là nó lành mạnh. 
+            },
+            { 
+                title Địa bàn hoạt động, 
+                desc Công ty công nghệ của bạn muốn đặt trụ sở tại một huyện đảo xa xôi để hưởng ưu đãi thuế và hỗ trợ phát triển kinh tế biển., 
+                options [
+                    { text Chủ động lựa chọn địa điểm kinh doanh, correct true },
+                    { text Bắt buộc phải đặt tại các thành phố lớn, correct false },
+                    { text Phải xin chỉ thị từ Bộ Kế hoạch Đầu tư, correct false },
+                    { text Chỉ được mở văn phòng đại diện tại đó, correct false }
+                ],
+                res Doanh nghiệp có quyền tự chủ lựa chọn địa bàn, hình thức kinh doanh, quy mô và ngành, nghề kinh doanh.,
+                lesson Vị trí chiến lược do bạn quyết định. Hãy chọn nơi tối ưu nhất cho bài toán tài chính và mục tiêu của công ty. 
+            },
+            { 
+                title Quản trị nhân sự, 
+                desc Dự án AI của bạn cần một chuyên gia cấp cao từ thung lũng Silicon. Hội đồng quản trị lo lắng về thủ tục thuê người nước ngoài., 
+                options [
+                    { text Tự quyết định tuyển dụng theo nhu cầu, correct true },
+                    { text Chỉ được phép thuê lao động trong nước, correct false },
+                    { text Chờ nhà nước phân bổ nhân sự phù hợp, correct false },
+                    { text Phải ưu tiên con em cán bộ địa phương, correct false }
+                ],
+                res Quyền tự chủ quyết định tuyển dụng, thuê và sử dụng lao động theo nhu cầu kinh doanh là quyền cơ bản của doanh nghiệp.,
+                lesson Con người là tài sản quý nhất. Một CEO giỏi là người biết tìm và sử dụng đúng người tài, bất kể họ đến từ đâu. 
+            },
+            { 
+                title Thị trường & Hợp đồng, 
+                desc Một đối tác quốc tế muốn mua độc quyền sản phẩm của bạn với giá cực cao, nhưng yêu cầu ký kết ngay trong đêm., 
+                options [
+                    { text Tự do tìm khách hàng và ký kết hợp đồng, correct true },
+                    { text Phải thông báo cho cơ quan quản lý giá, correct false },
+                    { text Đăng ký xin phép 'Quyền ký kết' tại Sở, correct false },
+                    { text Hợp đồng chỉ có hiệu lực vào giờ hành chính, correct false }
+                ],
+                res Doanh nghiệp có quyền tự do tìm kiếm thị trường, khách hàng và ký kết hợp đồng theo thỏa thuận của các bên.,
+                lesson Tốc độ và sự tự chủ là chìa khóa. Hãy nắm bắt cơ hội thị trường dựa trên khả năng thương thuyết của chính mình. 
+            },
+            { 
+                title Ứng dụng Khoa học, 
+                desc Bạn muốn dùng toàn bộ lợi nhuận năm nay để đầu tư hệ thống Robot tự động hóa thay thế dây chuyền cũ., 
+                options [
+                    { text Chủ động ứng dụng công nghệ hiện đại, correct true },
+                    { text Phải xin phép thẩm định độ hiện đại, correct false },
+                    { text Chỉ được dùng công nghệ trong nước, correct false },
+                    { text Bị hạn chế vì sợ gây ra thất nghiệp, correct false }
+                ],
+                res Luật cho phép doanh nghiệp chủ động ứng dụng khoa học và công nghệ hiện đại để nâng cao hiệu quả kinh doanh.,
+                lesson Đổi mới hay là chết! Công nghệ chính là đòn bẩy để doanh nghiệp của bạn vươn tầm quốc tế. 
+            }
+        ];
+
+        let currentStep = 0, score = 0, timeLeft = INITIAL_TIME, timerInterval, isGameOver = false, playerName = , playerClass = ;
+
+        const audioCtx = new (window.AudioContext  window.webkitAudioContext)();
+
+         Hàm xáo trộn mảng (Fisher-Yates Shuffle)
+        function shuffle(array) {
+            for (let i = array.length - 1; i  0; i--) {
+                const j = Math.floor(Math.random()  (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function playSound(type) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2);
+            } else {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+                document.getElementById('game-container').classList.add('shake');
+                setTimeout(() = document.getElementById('game-container').classList.remove('shake'), 500);
+            }
+        }
+
+        function checkAndStart() {
+            playerName = document.getElementById('player-name').value.trim();
+            playerClass = document.getElementById('player-class').value.trim();
+            if (!playerName  !playerClass) {
+                alert(Vui lòng nhập đầy đủ Họ tên và Lớp!);
+                return;
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            startGame();
+        }
+
+        function startGame() {
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+            document.getElementById('timer-wrapper').classList.remove('hidden');
+            timerInterval = setInterval(() = {
+                if (isGameOver) return;
+                timeLeft--;
+                const min = Math.floor(timeLeft  60), sec = timeLeft % 60;
+                document.getElementById('timer-display').innerText = `${min.toString().padStart(2,'0')}${sec.toString().padStart(2,'0')}`;
+                if (timeLeft = 0) showResult();
+            }, 1000);
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const data = gameData[currentStep];
+            document.getElementById('progress-text').innerText = `Thử thách 0${currentStep + 1}`;
+            document.getElementById('score-text').innerText = `${score} XP`;
+            document.getElementById('progress-bar').style.width = `${(currentStep + 1)  (100  gameData.length)}%`;
+            document.getElementById('question-title').innerText = data.title;
+            document.getElementById('question-desc').innerText = data.desc;
+            
+            const optDiv = document.getElementById('options');
+            optDiv.innerHTML = '';
+
+             Xáo trộn danh sách đáp án trước khi hiển thị
+            const shuffledOptions = shuffle([...data.options]);
+
+            shuffledOptions.forEach(opt = {
+                const btn = document.createElement('button');
+                btn.className = w-full text-left p-5 rounded-2xl bg-slate-80040 border-2 border-slate-700 hoverborder-indigo-500 hoverbg-indigo-50010 transition-all font-semibold text-base leading-snug;
+                btn.innerText = opt.text;
+                btn.onclick = () = handleAnswer(opt.correct);
+                optDiv.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(isCorrect) {
+            const data = gameData[currentStep];
+            if (isCorrect) {
+                score += 20;
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+            
+            const fbBox = document.getElementById('feedback-box');
+            fbBox.classList.remove('hidden');
+            fbBox.querySelector('#feedback-content').style.borderColor = isCorrect  '#4ade80'  '#f87171';
+            
+            document.getElementById('feedback-status-icon').innerText = isCorrect  ✅  ❌;
+            document.getElementById('feedback-title').innerText = isCorrect  Chính xác!  Sai rồi!;
+            document.getElementById('feedback-title').className = `text-3xl font-black uppercase ${isCorrect  'text-emerald-400'  'text-rose-400'}`;
+            document.getElementById('feedback-text').innerText = data.res;
+            document.getElementById('lesson-text').innerText = `“${data.lesson}”`;
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedback-box').classList.add('hidden');
+            currentStep++;
+            if (currentStep  gameData.length) renderQuestion(); else showResult();
+        }
+
+        function showResult() {
+            isGameOver = true;
+            clearInterval(timerInterval);
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+            
+            document.getElementById('res-player-name').innerText = playerName;
+            document.getElementById('res-player-class').innerText = `Lớp ${playerClass}`;
+            document.getElementById('final-score').innerText = score;
+            
+            const now = new Date();
+            document.getElementById('res-timestamp').innerText = `Ngày ${now.toLocaleDateString('vi-VN')}`;
+            document.getElementById('res-time-played').innerText = `Thời gian ${INITIAL_TIME - timeLeft} giây`;
+
+            let rank = CEO TẬP SỰ;
+            if (score === 100) rank = HUYỀN THOẠI CEO;
+            else if (score = 60) rank = QUẢN LÝ TIỀM NĂNG;
+            
+            document.getElementById('rank-badge').innerText = `DANH HIỆU ${rank}`;
+        }
+    script
+body
+html
